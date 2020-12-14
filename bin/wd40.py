@@ -2,11 +2,12 @@
 import argparse
 import wdforty.misc
 import wdforty.catRun
-import textwrap
+import wdforty.barDiag
 import sys
 
 parser = argparse.ArgumentParser(description='Here to make your life easy! fac.py <command> [<args>]')
-parser.add_argument('command', type=str, choices = ['storageHammer', 'projCP', 'fastQC', 'catRun'],
+
+parser.add_argument('command', type=str, choices = ['barDiag','catRun', 'fastQC', 'projCP', 'storageHammer'],
                     help='Give the command you would like to perform. ')
 parser.add_argument('--projects', 
                     help='catRun: list the projects you would like to combine. Seperated by comma!')
@@ -37,4 +38,7 @@ if args.command == 'catRun':
         sys.exit()
     baseDir = config['catRun']['baseDir']
     wdforty.catRun.catRun(Projects, Flowcells, baseDir)
-    
+
+if args.command == 'barDiag':
+    ssDic = wdforty.barDiag.parseSS('SampleSheet.csv')
+    print(ssDic)
