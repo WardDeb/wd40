@@ -8,17 +8,37 @@ def parseSS(ss):
             if not line.strip().startswith('[Data]') and not line.strip().startswith('Lane'):
                 quer = line.strip().split(',')
                 lane = quer[0]
-                proj = quer[5]
                 sample = quer[2]
-                p7 = quer[3]
-                p5 = quer[4]
                 if lane not in ssDic:
                     ssDic[lane] = {}
-                if proj not in ssDic[lane]:
-                    ssDic[lane][proj] = {sample:[p7,p5]}
-                else:
-                    ssDic[lane][proj][sample] = [p7,p5]
+                if len(line.strip().split(',')) == 5:
+                    proj = quer[4]
+                    p7 = quer[3]
+                    if proj not in ssDic[lane]:
+                        ssDic[lane][proj] = {sample:[p7]}
+                    else:
+                        ssDic[lane][proj][sample] = [p7]
+                elif len(line.strip().split(',')) == 6:
+                    proj = quer[5]
+                    p7 = quer[3]
+                    p5 = quer[4]
+                    if proj not in ssDic[lane]:
+                        ssDic[lane][proj] = {sample:[p7,p5]}
+                    else:
+                        ssDic[lane][proj][sample] = [p7,p5]
     return ssDic
+
+def parseUnd():
+    UndComb = {}
+    with open('Stats/Stats.json') as f:
+        stats = json.load(f)
+        for lane in stats['UnknownBarcodes']:
+            for comb in lane['Barcodes']:
+                if lane['Barcodes'][comb] > 500000:
+                    UndComb[comb] = lane['Barcodes'][comb]
+    return UndComb
+
+
 
 ##TODO This goes over the entire smaplesheet , we can improve it by adding a specific project to through
 ## Also reversin i7, in case it ever needs to be rced.

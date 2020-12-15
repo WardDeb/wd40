@@ -42,3 +42,5 @@ if args.command == 'catRun':
 if args.command == 'barDiag':
     ssDic = wdforty.barDiag.parseSS('SampleSheet.csv')
     print(ssDic)
+    UndComb = wdforty.barDiag.parseUnd()
+    print(UndComb)
