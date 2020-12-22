@@ -3,6 +3,10 @@ import os
 import psutil
 import subprocess
 
+def fastQC(projectDir):
+    for sample in os.listdir(projectDir):
+       print(sample)
+
 def projCP(destination):
     projDirs = []
     for i in os.listdir():
