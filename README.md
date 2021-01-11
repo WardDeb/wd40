@@ -4,8 +4,9 @@ Stuff to make my life easier.
 
 # Todo
 
- - [ ] FastQC runner
- - [ ] multiQC runner
+ - [x] FastQC runner
+ - [x] multiQC runner
+ - [ ] standalone contam screen.
  - [ ] md5sums
  - [ ] fastqScreener
  - [ ] barcodeDebug

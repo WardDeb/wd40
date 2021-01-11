@@ -3,11 +3,12 @@ import argparse
 import wdforty.misc
 import wdforty.catRun
 import wdforty.barDiag
+import wdforty.QC
 import sys
 
 parser = argparse.ArgumentParser(description='Here to make your life easy! fac.py <command> [<args>]')
 
-parser.add_argument('command', type=str, choices = ['barDiag','catRun', 'fastQC', 'projCP', 'storageHammer'],
+parser.add_argument('command', type=str, choices = ['barDiag','catRun', 'projCP', 'storageHammer', 'QC'],
                     help='Give the command you would like to perform. ')
 parser.add_argument('--projects', 
                     help='catRun: list the projects you would like to combine. Seperated by comma!')
@@ -44,3 +45,8 @@ if args.command == 'barDiag':
     print(ssDic)
     UndComb = wdforty.barDiag.parseUnd()
     print(UndComb)
+
+if args.command == 'QC':
+    fastQC = config['QC']['fastQCPath']
+    multiQC = config['QC']['multiQCPath']
+    wdforty.QC.fastQCrunner(fastQC, multiQC)
