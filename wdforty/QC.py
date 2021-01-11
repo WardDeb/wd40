@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+def clumpRunner()
 def fastQCrunner(fastQC, multiQC):
     for i in os.listdir():
         if 'Project_' in i and 'FASTQC' not in i:

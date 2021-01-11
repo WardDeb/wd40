@@ -8,7 +8,7 @@ import sys
 
 parser = argparse.ArgumentParser(description='Here to make your life easy! fac.py <command> [<args>]')
 
-parser.add_argument('command', type=str, choices = ['barDiag','catRun', 'projCP', 'storageHammer', 'QC'],
+parser.add_argument('command', type=str, choices = ['barDiag','catRun', 'projCP', 'storageHammer', 'QC', 'bigClump'],
                     help='Give the command you would like to perform. ')
 parser.add_argument('--projects', 
                     help='catRun: list the projects you would like to combine. Seperated by comma!')
@@ -45,6 +45,10 @@ if args.command == 'barDiag':
     print(ssDic)
     UndComb = wdforty.barDiag.parseUnd()
     print(UndComb)
+
+if args.command == 'bigClump':
+    clumpif = config['QC']['clumpifyPath']
+    clumpCmd = [clumpif, 'dupesubs=0', qin=33, markduplicates=t, optical=t, dupedist=12000, -Xmx220G, threads=20, in=R1, in2=R2]
 
 if args.command == 'QC':
     fastQC = config['QC']['fastQCPath']

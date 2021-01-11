@@ -6,6 +6,7 @@ Stuff to make my life easier.
 
  - [x] FastQC runner
  - [x] multiQC runner
+ - [ ] Declumper Bigmem
  - [ ] standalone contam screen.
  - [ ] md5sums
  - [ ] fastqScreener
