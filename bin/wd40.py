@@ -4,53 +4,61 @@ import wdforty.misc
 import wdforty.catRun
 import wdforty.barDiag
 import wdforty.QC
+import wdforty.Clump
 import sys
 
-parser = argparse.ArgumentParser(description='Here to make your life easy! fac.py <command> [<args>]')
+def main():
+    parser = argparse.ArgumentParser(description='Here to make your life easy! fac.py <command> [<args>]')
 
-parser.add_argument('command', type=str, choices = ['barDiag','catRun', 'projCP', 'storageHammer', 'QC', 'bigClump'],
-                    help='Give the command you would like to perform. ')
-parser.add_argument('--projects', 
-                    help='catRun: list the projects you would like to combine. Seperated by comma!')
-parser.add_argument('--flowcells',
-                    help='catRun: list the flowcells (looked for under baseDir specified in ini) where the projects reside.')
-args = parser.parse_args()
+    parser.add_argument('command', type=str, choices = ['barDiag','bigClump','catRun', 'projCP', 'storageHammer', 'QC', 'QCScreen'],
+                        help='Give the command you would like to perform. ')
+    parser.add_argument('--projects', 
+                        help='catRun: list the projects you would like to combine. Seperated by comma!')
+    parser.add_argument('--flowcells',
+                        help='catRun: list the flowcells (looked for under baseDir specified in ini) where the projects reside.')
+    args = parser.parse_args()
 
-config = wdforty.misc.getConfig()
-if args.command == 'projCP':
-    wdforty.misc.projCP(config['projCP']['destination'])
+    config = wdforty.misc.getConfig()
+    if args.command == 'projCP':
+        wdforty.misc.projCP(config['projCP']['destination'])
 
-if args.command == 'storageHammer':
-    PIs = config['storageHammer']['PIs'].split(',')
-    prefix = config['storageHammer']['prefix']
-    postfix = config['storageHammer']['postfix']
-    wdforty.misc.storageHammer(PIs, prefix, postfix)
+    if args.command == 'storageHammer':
+        PIs = config['storageHammer']['PIs'].split(',')
+        prefix = config['storageHammer']['prefix']
+        postfix = config['storageHammer']['postfix']
+        wdforty.misc.storageHammer(PIs, prefix, postfix)
 
-if args.command == 'catRun':
-    try:
-        Projects = args.projects.replace(' ','').split(',')
-    except:
-        print("catRun module requires projects specified with --project Proj1,Proj2")
-        sys.exit()
-    try:
-        Flowcells = args.flowcells.replace(' ','').split(',')   
-    except:
-        print("catRun module requires flowcells specified with --flowcells flow1,flow2")
-        sys.exit()
-    baseDir = config['catRun']['baseDir']
-    wdforty.catRun.catRun(Projects, Flowcells, baseDir)
+    if args.command == 'catRun':
+        try:
+            Projects = args.projects.replace(' ','').split(',')
+        except:
+            print("catRun module requires projects specified with --project Proj1,Proj2")
+            sys.exit()
+        try:
+            Flowcells = args.flowcells.replace(' ','').split(',')   
+        except:
+            print("catRun module requires flowcells specified with --flowcells flow1,flow2")
+            sys.exit()
+        baseDir = config['catRun']['baseDir']
+        wdforty.catRun.catRun(Projects, Flowcells, baseDir)
 
-if args.command == 'barDiag':
-    ssDic = wdforty.barDiag.parseSS('SampleSheet.csv')
-    print(ssDic)
-    UndComb = wdforty.barDiag.parseUnd()
-    print(UndComb)
+    if args.command == 'barDiag':
+        ssDic = wdforty.barDiag.parseSS('SampleSheet.csv')
+        print(ssDic)
+        UndComb = wdforty.barDiag.parseUnd()
+        print(UndComb)
 
-if args.command == 'bigClump':
-    clumpif = config['QC']['clumpifyPath']
-    clumpCmd = [clumpif, 'dupesubs=0', qin=33, markduplicates=t, optical=t, dupedist=12000, -Xmx220G, threads=20, in=R1, in2=R2]
+    if args.command == 'bigClump':
+        wdforty.Clump.clumpRunner(config['QC']['clumpifyPath'], config['QC']['splitFQPath'])
 
-if args.command == 'QC':
-    fastQC = config['QC']['fastQCPath']
-    multiQC = config['QC']['multiQCPath']
-    wdforty.QC.fastQCrunner(fastQC, multiQC)
+    if args.command == 'QC':
+        fastQC = config['QC']['fastQCPath']
+        multiQC = config['QC']['multiQCPath']
+        wdforty.QC.fastQCrunner(fastQC, multiQC)
+
+    if args.command == 'QCScreen':
+        print("Do some fastq_screen work.")
+        
+
+if __name__ == "__main__":
+    main()

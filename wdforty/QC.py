@@ -1,7 +1,6 @@
 import os
 import subprocess
 
-def clumpRunner()
 def fastQCrunner(fastQC, multiQC):
     for i in os.listdir():
         if 'Project_' in i and 'FASTQC' not in i:
@@ -25,8 +24,6 @@ def fastQCrunner(fastQC, multiQC):
                     readFiles.append(os.path.join(projectDir, sample, i))         
             os.mkdir(fastQCout)
             fastQCcmd = [fastQC,"-t", "20", "-o",fastQCout,readFiles[0],readFiles[1]]
-            print(' '.join(fastQCcmd))
-            print(readFiles)
             subprocess.run(fastQCcmd)
         #run multiQC
         multiQCcmd = [multiQC, '-o',projectDir, QCpath]
