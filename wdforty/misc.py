@@ -3,6 +3,7 @@ import os
 import psutil
 import subprocess
 
+
 def fastQC(projectDir):
     for sample in os.listdir(projectDir):
        print(sample)

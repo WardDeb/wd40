@@ -12,6 +12,7 @@ setuptools.setup(
    include_package_data = False,
    install_requires = ['configparser',
                        'psutil',
-                       'Biopython'],
+                       'Biopython',
+                       'matplotlib'],
    python_requires='>3'
 )
