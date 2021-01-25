@@ -6,13 +6,13 @@ import wdforty.barDiag
 import wdforty.QC
 import wdforty.Clump
 import wdforty.QCScreen
-import wdforty.specScreen
+import wdforty.umiCount
 import sys
 
 def main():
     parser = argparse.ArgumentParser(description='Here to make your life easy! fac.py <command> [<args>]')
 
-    parser.add_argument('command', type=str, choices = ['barDiag','bigClump','catRun', 'projCP', 'storageHammer','specScreen', 'QC', 'QCScreen'],
+    parser.add_argument('command', type=str, choices = ['barDiag', 'bigClump', 'catRun', 'projCP', 'storageHammer', 'QC', 'QCScreen', 'umiCount'],
                         help='Give the command you would like to perform. ')
     parser.add_argument('--projects', 
                         help='catRun: list the projects you would like to combine. Seperated by comma! e.g. Project_1111')
@@ -20,6 +20,10 @@ def main():
                         help='catRun: list the flowcells (looked for under baseDir specified in ini) where the projects reside.')
     parser.add_argument('--specList',
                         help='Provide a TSV file that contains a project ID (e.g. Project_1111), followed by a PI id.')
+    parser.add_argument('--umi',
+                        help='provide the UMI sequence to screen for.')
+    parser.add_argument('--umiFqFile', choices = ["R1", "R2"],
+                        help='Specify if the UMI should be searched for in R1 or R2')
     args = parser.parse_args()
 
     config = wdforty.misc.getConfig()
@@ -65,22 +69,17 @@ def main():
         seqtk = config['QC']['seqtkPath']
         screenconf = config['QC']['fqScreenConf']
         wdforty.QCScreen.screenRunner(fastqScreen,screenconf, seqtk)
-
-    if args.command == 'specScreen':
-        projPIdic = {}
-        try:
-            with open('args.specList') as f:
-                for line in f:
-                    proj = line.strip().split()[0]
-                    PI = line.strip().split()[1]
-                    projPIdic[proj] = PI
-        except:
-            print('Error parsing the specList. Please reformat.')
-        # LINK.
-        # SnakePipes.
-        # retain the featurecounts file.
-
-        
+    
+    if args.command == 'umiCount':
+        if not args.umiFqFile:
+            print("Specify --umiFqFile (R1 or R2)")
+            sys.exit()
+        elif not args.umi:
+            print("Specify --umi SEQUENCE")
+            sys.exit()
+        else:
+            resDic = wdforty.umiCount.umiCounter(args.umi, args.umiFqFile)
+            print(resDic)
 
 if __name__ == "__main__":
     main()
