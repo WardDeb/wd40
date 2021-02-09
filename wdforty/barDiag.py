@@ -1,6 +1,29 @@
 from Bio.Seq import Seq
 import json
 
+def rev(string):
+    return ''.join(reversed(string))
+
+def revP5(ss):
+    with open(ss) as f:
+        ssLis = []
+        for line in f:
+            if line.strip().startswith('[Data]') or line.strip().startswith('Lane'):
+                ssLis.append(line.strip().split(','))
+            else:
+                quer=line.strip().split(',')
+                lane=quer[0]
+                sample=quer[1]
+                name=quer[2]
+                p7=quer[3]
+                p5=quer[4]
+                proj=quer[5]
+                revp5 = str(Seq(rev(str(p5))).complement())
+                ssLis.append([lane,sample,name,p7,revp5, proj])
+    return ssLis
+
+
+
 def parseSS(ss):
     ssDic = {}
     with open(ss) as f:

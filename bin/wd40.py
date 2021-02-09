@@ -12,7 +12,8 @@ import sys
 def main():
     parser = argparse.ArgumentParser(description='Here to make your life easy! fac.py <command> [<args>]')
 
-    parser.add_argument('command', type=str, choices = ['barDiag', 'bigClump', 'catRun', 'projCP', 'storageHammer', 'QC', 'QCScreen', 'umiCount'],
+    parser.add_argument('command', type=str, choices = ['barDiag', 'bigClump', 'catRun', 'projCP', 'storageHammer',
+     'QC', 'QCScreen', 'umiCount', 'linkscReads'],
                         help='Give the command you would like to perform. ')
     parser.add_argument('--projects', 
                         help='catRun: list the projects you would like to combine. Seperated by comma! e.g. Project_1111')
@@ -52,9 +53,12 @@ def main():
 
     if args.command == 'barDiag':
         ssDic = wdforty.barDiag.parseSS('SampleSheet.csv')
-        print(ssDic)
+        #print(ssDic)
         UndComb = wdforty.barDiag.parseUnd()
-        print(UndComb)
+        #print(UndComb)
+        revSS = wdforty.barDiag.revP5('SampleSheet.csv')
+        for i in revSS:
+            print(','.join(i))
 
     if args.command == 'bigClump':
         wdforty.Clump.clumpRunner(config['QC']['clumpifyPath'], config['QC']['splitFQPath'])
@@ -80,6 +84,13 @@ def main():
         else:
             resDic = wdforty.umiCount.umiCounter(args.umi, args.umiFqFile)
             print(resDic)
+
+    if args.command == 'linkscReads':
+        if not args.projects:
+            print("Specify a project directory.")
+            sys.exit()
+        else:
+            wdforty.misc.scLinker(args.projects)
 
 if __name__ == "__main__":
     main()

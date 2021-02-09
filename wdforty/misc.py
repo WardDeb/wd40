@@ -2,7 +2,26 @@ import configparser
 import os
 import psutil
 import subprocess
+import glob
 
+def scLinker(projectDir):
+    files = glob.glob(os.path.join(os.path.abspath(projectDir),"Sample_*", "*_R1.fastq.gz"))
+    print(files)
+    samples = {}
+    for sample in files:
+        bname = os.path.basename(sample)[:-12]
+        pname = bname[:-2]
+        os.makedirs(os.path.join("fastq", pname), exist_ok=True)
+        if pname not in samples:
+            samples[pname] = []
+        samples[pname].append(bname)
+        R1 = "{}_S1_L001_R1_001.fastq.gz".format(os.path.join("fastq", pname, bname))
+        R2 = "{}_S1_L001_R2_001.fastq.gz".format(os.path.join("fastq", pname, bname))
+        if not os.path.exists(R1):
+            os.symlink(sample, R1)
+        if not os.path.exists(R2):
+            os.symlink("{}_R2.fastq.gz".format(sample[:-12]), R2)
+        print("Relinked {}".format(sample))
 
 def fastQC(projectDir):
     for sample in os.listdir(projectDir):
