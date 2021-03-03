@@ -14,6 +14,7 @@ setuptools.setup(
                      'psutil',
                      'Biopython',
                      'matplotlib',
-                     'flake8'],
+                     'flake8',
+                     'rich'],
    python_requires='>3'
 )

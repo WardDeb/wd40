@@ -7,29 +7,40 @@ import wdforty.QC
 import wdforty.Clump
 import wdforty.QCScreen
 import wdforty.umiCount
+import rich
 import sys
 
+
 def main():
-    parser = argparse.ArgumentParser(description='Here to make your life easy! fac.py <command> [<args>]')
-
-    parser.add_argument('command', type=str, choices = ['barDiag', 'bigClump', 'catRun', 'projCP', 'storageHammer',
-     'QC', 'QCScreen', 'umiCount', 'linkscReads'],
-                        help='Give the command you would like to perform. ')
-    parser.add_argument('--projects', 
-                        help='catRun: list the projects you would like to combine. Seperated by comma! e.g. Project_1111')
-    parser.add_argument('--flowcells',
-                        help='catRun: list the flowcells (looked for under baseDir specified in ini) where the projects reside.')
-    parser.add_argument('--specList',
-                        help='Provide a TSV file that contains a project ID (e.g. Project_1111), followed by a PI id.')
-    parser.add_argument('--umi',
-                        help='provide the UMI sequence to screen for.')
-    parser.add_argument('--umiFqFile', choices = ["R1", "R2"],
-                        help='Specify if the UMI should be searched for in R1 or R2')
-    args = parser.parse_args()
-
+    # Main args.
+    parser = argparse.ArgumentParser(
+        description='Facilitate seq processing! fac.py <command> [<args>]'
+    )
+    parser.add_argument(
+        'command',
+        type=str,
+        choices=['barDiag',
+                 'bigClump',
+                 'catRun',
+                 'projCP',
+                 'storageHammer',
+                 'QC',
+                 'QCScreen',
+                 'umiCount',
+                 'linkscReads'],
+        help='Give the command you would like to perform. ')
+    try:
+        options = parser.parse_args()
+    except:
+        parser.print_help()
+        sys.exit(0)
+    
+    #Read config.
     config = wdforty.misc.getConfig()
+
     if args.command == 'projCP':
-        wdforty.misc.projCP(config['projCP']['destination'])
+        print("projCP")
+        #wdforty.misc.projCP(config['projCP']['destination'])
 
     if args.command == 'storageHammer':
         PIs = config['storageHammer']['PIs'].split(',')
@@ -38,35 +49,39 @@ def main():
         wdforty.misc.storageHammer(PIs, prefix, postfix)
 
     if args.command == 'catRun':
-        try:
-            Projects = args.projects.replace(' ','').split(',')
-        except:
-            print("catRun module requires projects specified with --project Proj1,Proj2")
-            sys.exit()
-        try:
-            Flowcells = args.flowcells.replace(' ','').split(',')   
-        except:
-            print("catRun module requires flowcells specified with --flowcells flow1,flow2")
-            sys.exit()
-        baseDir = config['catRun']['baseDir']
-        wdforty.catRun.catRun(Projects, Flowcells, baseDir)
+        print("doing the CAT")
+        #try:
+        #    Projects = args.projects.replace(' ','').split(',')
+        #except:
+        #    print("catRun module requires projects specified with --project Proj1,Proj2")
+        #    sys.exit()
+        #try:
+        #    Flowcells = args.flowcells.replace(' ','').split(',')   
+        #except:
+        #    print("catRun module requires flowcells specified with --flowcells flow1,flow2")
+        #    sys.exit()
+        #baseDir = config['catRun']['baseDir']
+        #wdforty.catRun.catRun(Projects, Flowcells, baseDir)
 
     if args.command == 'barDiag':
-        ssDic = wdforty.barDiag.parseSS('SampleSheet.csv')
+        print("diagnosing some barcodes.")
+        #ssDic = wdforty.barDiag.parseSS('SampleSheet.csv')
         #print(ssDic)
-        UndComb = wdforty.barDiag.parseUnd()
+        #UndComb = wdforty.barDiag.parseUnd()
         #print(UndComb)
-        revSS = wdforty.barDiag.revP5('SampleSheet.csv')
-        for i in revSS:
-            print(','.join(i))
+        #revSS = wdforty.barDiag.revP5('SampleSheet.csv')
+        #for i in revSS:
+        #    print(','.join(i))
 
     if args.command == 'bigClump':
-        wdforty.Clump.clumpRunner(config['QC']['clumpifyPath'], config['QC']['splitFQPath'])
+        print("Hammerclumps. Sit tight, this takes a while.")
+        #wdforty.Clump.clumpRunner(config['QC']['clumpifyPath'], config['QC']['splitFQPath'])
 
     if args.command == 'QC':
-        fastQC = config['QC']['fastQCPath']
-        multiQC = config['QC']['multiQCPath']
-        wdforty.QC.fastQCrunner(fastQC, multiQC)
+        print("Running fastqc&multiqc")
+        #fastQC = config['QC']['fastQCPath']
+        #multiQC = config['QC']['multiQCPath']
+        #wdforty.QC.fastQCrunner(fastQC, multiQC)
 
     if args.command == 'QCScreen':
         fastqScreen = config['QC']['fqScreenPath']
@@ -86,11 +101,12 @@ def main():
             print(resDic)
 
     if args.command == 'linkscReads':
-        if not args.projects:
-            print("Specify a project directory.")
-            sys.exit()
-        else:
-            wdforty.misc.scLinker(args.projects)
+        print("Linking some fqs inside 'fqs' dir.")
+        #if not args.projects:
+        #    print("Specify a project directory.")
+        #    sys.exit()
+        #else:
+        #    wdforty.misc.scLinker(args.projects)
 
 if __name__ == "__main__":
     main()
