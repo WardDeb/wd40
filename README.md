@@ -6,6 +6,7 @@ Some of this code comes directly from https://github.com/maxplanck-ie/TheWhoTheW
 
 # Todo
 
+ - [ ] set submodules with each their own args.
  - [x] FastQC runner
  - [x] multiQC runner
  - [x] Declumper Bigmem
