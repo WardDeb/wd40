@@ -1,5 +1,6 @@
 import os
 import subprocess
+import glob
 
 def catRun(Projects, flowcells, baseDir):
     for proj in Projects:

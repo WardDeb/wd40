@@ -30,7 +30,7 @@ def main():
                  'linkscReads'],
         help='Give the command you would like to perform. ')
     try:
-        options = parser.parse_args()
+        args = parser.parse_args()
     except:
         parser.print_help()
         sys.exit(0)
@@ -38,16 +38,18 @@ def main():
     #Read config.
     config = wdforty.misc.getConfig()
 
+    # projCP mode.
     if args.command == 'projCP':
-        print("projCP")
-        #wdforty.misc.projCP(config['projCP']['destination'])
+        wdforty.misc.projCP(config['projCP']['destination'])
 
+    # storageHammer
     if args.command == 'storageHammer':
         PIs = config['storageHammer']['PIs'].split(',')
         prefix = config['storageHammer']['prefix']
         postfix = config['storageHammer']['postfix']
         wdforty.misc.storageHammer(PIs, prefix, postfix)
 
+    # catRun
     if args.command == 'catRun':
         print("doing the CAT")
         #try:
