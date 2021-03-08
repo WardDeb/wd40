@@ -10,6 +10,7 @@ import wdforty.QCScreen
 import wdforty.umiCount
 import rich
 import sys
+import os
 
 
 def main():
@@ -43,6 +44,16 @@ def main():
                 'umiCount',
                 'linkscReads'],
         help=argparse.SUPPRESS)
+    parser.add_argument(
+        '--flowCells',
+        required=False,
+        help=argparse.SUPPRESS
+    )
+    parser.add_argument(
+        '--projects',
+        required=False,
+        help=argparse.SUPPRESS
+    )
     parser.formatter_class = lambda prog: argparse.RawDescriptionHelpFormatter(prog, max_help_position=25, width=90)
     parser.description = textwrap.dedent('''
                 wd40.py - Universal lubricant.
@@ -81,21 +92,23 @@ def main():
     if args.command == 'bigClump':
         rich.print("[bold magenta]Serial Clumpification invoked. Sit tight, this takes a while.[/bold magenta]")
         wdforty.Clump.clumpRunner(config['QC']['clumpifyPath'], config['QC']['splitFQPath'])
+    
     # catRun
-    #if args.command == 'catRun':
-    #    print("doing the CAT")
-    #    #try:
-        #    Projects = args.projects.replace(' ','').split(',')
-        #except:
-        #    print("catRun module requires projects specified with --project Proj1,Proj2")
-        #    sys.exit()
-        #try:
-        #    Flowcells = args.flowcells.replace(' ','').split(',')   
-        #except:
-        #    print("catRun module requires flowcells specified with --flowcells flow1,flow2")
-        #    sys.exit()
-        #baseDir = config['catRun']['baseDir']
-        #wdforty.catRun.catRun(Projects, Flowcells, baseDir)
+    if args.command == 'catRun':
+        if not args.flowCells or not args.projects:
+            rich.print("Please specify [bold cyan]flowcells[/bold cyan] using --flowCells Flowcell1,Flowcell2,Flowcell3")
+            rich.print("Please specify [bold cyan]projects[/bold cyan] using --projects Project1,Project2")
+            sys.exit()
+        else:
+            projects = args.projects.replace(' ','').split(',')
+            flowCells = args.flowCells.replace(' ','').split(',')
+            for proj in projects:
+                if os.path.exists(proj):
+                    rich.print("[bold red]Directory {} already exists. Please run this command in a location that does not contain the projects to be catted.[/bold red]".format(proj))
+                    sys.exit()
+        baseDir = config['catRun']['baseDir']
+        wdforty.catRun.catRun(projects, flowCells, baseDir)
+
 
     #if args.command == 'barDiag':
     #    print("diagnosing some barcodes.")

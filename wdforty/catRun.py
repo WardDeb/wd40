@@ -1,12 +1,13 @@
 import os
 import subprocess
 import glob
+import rich
 
 def catRun(Projects, flowcells, baseDir):
     for proj in Projects:
         os.mkdir(proj)
         Samples = [sample for sample in os.listdir(os.path.join(baseDir,flowcells[0],proj)) if 'Sample_' in sample]
-        print("found {} Samples ({})".format(len(Samples), ','.join(Samples)))
+        rich.print("Project {}: found {} Samples ({})".format(proj, len(Samples), ','.join(Samples)))
         for sample in Samples:
             catOutDir = os.path.join(proj, sample)
             os.mkdir(catOutDir)
@@ -24,10 +25,12 @@ def catRun(Projects, flowcells, baseDir):
             #Catting time.
             catName = R1s[0].split('/')[-1]
             catcmdR1 = ['cat'] + R1s
+            print(' '.join(catcmdR1))
             with open(os.path.join(catOutDir, catName), "w") as out1:
                 subprocess.run(catcmdR1, stdout=out1)
             catName = R2s[0].split('/')[-1]
             catcmdR2 = ['cat'] + R2s
+            print(' '.join(catcmdR2))
             with open(os.path.join(catOutDir, catName), "w") as out2:
                 subprocess.run(catcmdR2, stdout=out2)
     return "Done."
