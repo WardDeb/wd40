@@ -17,7 +17,6 @@ def fastQCrunner(fastQC, multiQC):
                 QCout = "FASTQC_" + sample
                 os.mkdir(QCout)
                 fastQCcmd = [fastQC,"-t", "30", "-o",QCout] + fqFiles
-                print(fastQCcmd)
                 subprocess.run(fastQCcmd)
             if not os.path.exists(os.path.join(projectDir, 'multiqc_report.html')):
                 multiQCcmd = [multiQC, '-o',projectDir, QCpath]
