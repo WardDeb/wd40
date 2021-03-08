@@ -1,34 +1,37 @@
 from Bio.Seq import Seq
 import json
 
+
 def rev(string):
     return ''.join(reversed(string))
+
 
 def revP5(ss):
     with open(ss) as f:
         ssLis = []
         for line in f:
-            if line.strip().startswith('[Data]') or line.strip().startswith('Lane'):
+            if line.strip().startswith('[Data]') or \
+               line.strip().startswith('Lane'):
                 ssLis.append(line.strip().split(','))
             else:
-                quer=line.strip().split(',')
-                lane=quer[0]
-                sample=quer[1]
-                name=quer[2]
-                p7=quer[3]
-                p5=quer[4]
-                proj=quer[5]
+                quer = line.strip().split(',')
+                lane = quer[0]
+                sample = quer[1]
+                name = quer[2]
+                p7 = quer[3]
+                p5 = quer[4]
+                proj = quer[5]
                 revp5 = str(Seq(rev(str(p5))).complement())
-                ssLis.append([lane,sample,name,p7,revp5, proj])
+                ssLis.append([lane, sample, name, p7, revp5, proj])
     return ssLis
-
 
 
 def parseSS(ss):
     ssDic = {}
     with open(ss) as f:
         for line in f:
-            if not line.strip().startswith('[Data]') and not line.strip().startswith('Lane'):
+            if not line.strip().startswith('[Data]') and not \
+                 line.strip().startswith('Lane'):
                 quer = line.strip().split(',')
                 lane = quer[0]
                 sample = quer[2]
@@ -38,7 +41,7 @@ def parseSS(ss):
                     proj = quer[4]
                     p7 = quer[3]
                     if proj not in ssDic[lane]:
-                        ssDic[lane][proj] = {sample:[p7]}
+                        ssDic[lane][proj] = {sample: [p7]}
                     else:
                         ssDic[lane][proj][sample] = [p7]
                 elif len(line.strip().split(',')) == 6:
@@ -46,10 +49,11 @@ def parseSS(ss):
                     p7 = quer[3]
                     p5 = quer[4]
                     if proj not in ssDic[lane]:
-                        ssDic[lane][proj] = {sample:[p7,p5]}
+                        ssDic[lane][proj] = {sample: [p7, p5]}
                     else:
-                        ssDic[lane][proj][sample] = [p7,p5]
+                        ssDic[lane][proj][sample] = [p7, p5]
     return ssDic
+
 
 def parseUnd():
     UndComb = {}
@@ -61,11 +65,10 @@ def parseUnd():
                     UndComb[comb] = lane['Barcodes'][comb]
     return UndComb
 
-
-
-##TODO This goes over the entire smaplesheet , we can improve it by adding a specific project to through
-## Also reversin i7, in case it ever needs to be rced.
-#with open(args.i, "r") as f:
+# TODO This goes over the entire smaplesheet ,
+# we can improve it by adding a specific project to through
+# Also reversin i7, in case it ever needs to be rced.
+# with open(args.i, "r") as f:
 #    with open("SampleSheet_rc.csv", "w+") as out_f: #Add it to the arg
 #        for index, line in enumerate(f):
 #            if index <2:
@@ -80,4 +83,3 @@ def parseUnd():
 #                    out_f.write("{},{},{},{},".format(line[0],line[1],line[2],line[3]))
 #                    i5 = Seq(line[4], generic_dna).reverse_complement()
 #                    out_f.write("{},{}".format(str(i5),line[5]))
-
