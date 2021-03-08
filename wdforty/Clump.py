@@ -1,7 +1,6 @@
 import os
 import subprocess
 import glob
-from rich.console import Console
 import rich
 import sys
 
