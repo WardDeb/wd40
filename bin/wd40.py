@@ -65,17 +65,11 @@ def main():
         sys.exit()
 
     args = parser.parse_args()
-    print(args.command)
-    
-    # Main args.
-    
-    
-    #Read config.
-
 
     # projCP mode.
-    #if args.command == 'projCP':
-    #    wdforty.misc.projCP(config['projCP']['destination'])
+    if args.command == 'projCP':
+        rich.print("[bold magenta]ProjCP invoked![/bold magenta]")
+        wdforty.misc.projCP(config['projCP']['destination'])
 
     # storageHammer
     #if args.command == 'storageHammer':

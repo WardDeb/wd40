@@ -3,22 +3,24 @@ import os
 import psutil
 import subprocess
 import glob
+import rich
 
 
 def projCP(destination):
+    rich.print("Shipping into [bold magenta]{}[/bold magenta]...".format(destination))
     for qc in glob.glob("Project_*/*multiqc_report.html"):
         des = os.path.join(destination, qc.split('/')[0] + '.html')
         try:
             subprocess.run(['cp',qc, des])
-            print("copied {} over to {}".format(qc, des))
+            rich.print("copied [bold green]{}[/bold green].".format(qc))
         except:
-            print("failed on {}".format(qc))
+            rich.print("failed on [bold green]{}[/bold green]".format(qc))
             continue
     try:
         subprocess.run(['cp', 'ContaminationReport.pdf', destination])
-        print("Shipped the contamination report.")
+        rich.print("Shipped the contamination report.")
     except:
-        print("Failed on shipping the contamination report.")
+        rich.print("Failed on shipping the contamination report.")
 
 def storageHammer(PIs, prefix, postfix):
     for pi in PIs:
