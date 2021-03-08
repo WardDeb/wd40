@@ -39,10 +39,11 @@ def main():
                 'catRun',
                 'projCP',
                 'storHam',
-                'QC',
-                'QCScreen',
-                'umiCount',
-                'linkscReads'],
+                'FastQC',
+#                'QCScreen',
+#                'umiCount',
+#                'linkscReads'
+        ],
         help=argparse.SUPPRESS)
     parser.add_argument(
         '--flowCells',
@@ -108,7 +109,13 @@ def main():
                     sys.exit()
         baseDir = config['catRun']['baseDir']
         wdforty.catRun.catRun(projects, flowCells, baseDir)
-
+    
+    # FastQC
+    if args.command == 'FastQC':
+        rich.print("Running fastqc and multiqc")
+        fastQC = config['QC']['fastQCPath']
+        multiQC = config['QC']['multiQCPath']
+        wdforty.QC.fastQCrunner(fastQC, multiQC)
 
     #if args.command == 'barDiag':
     #    print("diagnosing some barcodes.")
@@ -119,16 +126,6 @@ def main():
         #revSS = wdforty.barDiag.revP5('SampleSheet.csv')
         #for i in revSS:
         #    print(','.join(i))
-
-    #if args.command == 'bigClump':
-        #print("Hammerclumps. Sit tight, this takes a while.")
-        #wdforty.Clump.clumpRunner(config['QC']['clumpifyPath'], config['QC']['splitFQPath'])
-
-    #if args.command == 'QC':
-    #    print("Running fastqc&multiqc")
-        #fastQC = config['QC']['fastQCPath']
-        #multiQC = config['QC']['multiQCPath']
-        #wdforty.QC.fastQCrunner(fastQC, multiQC)
 
     #if args.command == 'QCScreen':
     #    fastqScreen = config['QC']['fqScreenPath']
