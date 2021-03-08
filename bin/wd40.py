@@ -37,7 +37,7 @@ def main():
                 'bigClump',
                 'catRun',
                 'projCP',
-                'storageHammer',
+                'storHam',
                 'QC',
                 'QCScreen',
                 'umiCount',
@@ -65,18 +65,18 @@ def main():
         sys.exit()
 
     args = parser.parse_args()
-
+    
+    ## noArgs functions.
     # projCP mode.
     if args.command == 'projCP':
         rich.print("[bold magenta]ProjCP invoked![/bold magenta]")
         wdforty.misc.projCP(config['projCP']['destination'])
-
-    # storageHammer
-    #if args.command == 'storageHammer':
-    #    PIs = config['storageHammer']['PIs'].split(',')
-    #    prefix = config['storageHammer']['prefix']
-    #    postfix = config['storageHammer']['postfix']
-    #    wdforty.misc.storageHammer(PIs, prefix, postfix)
+    # storHam
+    if args.command == 'storHam':
+        PIs = config['storageHammer']['PIs'].split(',')
+        prefix = config['storageHammer']['prefix']
+        postfix = config['storageHammer']['postfix']
+        wdforty.misc.storageHammer(PIs, prefix, postfix)
 
     # catRun
     #if args.command == 'catRun':

@@ -30,17 +30,17 @@ def storageHammer(PIs, prefix, postfix):
                 seqDat = os.path.join(prefix,pi,postfix + "2")
             hdd = psutil.disk_usage(seqDat)
             if hdd.used/hdd.total > 0.90:
-                print("{}'s sequencing data folder is above 90%! Space Free: {} GB".format(pi,hdd.free // (2**30)))
+                rich.print("[bold red]{}'s sequencing data folder is above 90%! Space Free: {} GB[/bold red]".format(pi,hdd.free // (2**30)))
             if hdd.used/hdd.total < 0.90 and hdd.used/hdd.total > 0.80:
-                print("{}'s sequencing data folder is above 80%. Space Free: {} GB".format(pi,hdd.free // (2**30)))
+                rich.print("[bold cyan]{}'s sequencing data folder is above 80%. Space Free: {} GB[/bold cyan]".format(pi,hdd.free // (2**30)))
         else:
             procDat = os.path.join(prefix,pi)
             hdd = psutil.disk_usage(procDat)
             if hdd.used/hdd.total > 0.90:
                 if 'processing' in pi:
-                    print("{} processing volume is above 90%! Space Free: {} GB".format(pi,hdd.free // (2**30)))
+                    rich.print("[bold red]{} processing volume is above 90%! Space Free: {} GB[/bold red]".format(pi,hdd.free // (2**30)))
                 else:
-                    print("{} is above 90%! Space Free: {} GB".format(procDat,hdd.free // (2**30)))
+                    rich.print("[bold red]{} is above 90%! Space Free: {} GB[/bold red]".format(procDat,hdd.free // (2**30)))
 
 
 def scLinker(projectDir):
