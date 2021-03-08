@@ -77,7 +77,10 @@ def main():
         prefix = config['storageHammer']['prefix']
         postfix = config['storageHammer']['postfix']
         wdforty.misc.storageHammer(PIs, prefix, postfix)
-
+    # bigClump
+    if args.command == 'bigClump':
+        rich.print("[bold magenta]Serial Clumpification invoked. Sit tight, this takes a while.[/bold magenta]")
+        wdforty.Clump.clumpRunner(config['QC']['clumpifyPath'], config['QC']['splitFQPath'])
     # catRun
     #if args.command == 'catRun':
     #    print("doing the CAT")
