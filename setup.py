@@ -15,6 +15,8 @@ setuptools.setup(
                      'Biopython',
                      'matplotlib',
                      'flake8',
-                     'rich'],
+                     'rich',
+                     'pandas',
+                     'numpy'],
    python_requires='>3'
 )

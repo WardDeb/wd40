@@ -1,69 +1,68 @@
 from Bio.Seq import Seq
 import json
+from zipfile import ZipFile
+import io
+import pandas as pd
+import os
+import numpy as np
+
+def grabZipCount(inputzip):
+    dataStr = inputzip.split('/')[-1].split('.')[0] + "/fastqc_data.txt"
+    with ZipFile(inputzip) as z:
+        with z.open(dataStr) as f:
+            qcData = io.TextIOWrapper(f, newline='\n')
+            for line in qcData:
+                if line.startswith('Total'):
+                    return int(line.strip().split()[2])
 
 
 def rev(string):
     return ''.join(reversed(string))
 
+#                 revp5 = str(Seq(rev(str(p5))).complement())
 
-def revP5(ss):
-    with open(ss) as f:
-        ssLis = []
-        for line in f:
-            if line.strip().startswith('[Data]') or \
-               line.strip().startswith('Lane'):
-                ssLis.append(line.strip().split(','))
-            else:
-                quer = line.strip().split(',')
-                lane = quer[0]
-                sample = quer[1]
-                name = quer[2]
-                p7 = quer[3]
-                p5 = quer[4]
-                proj = quer[5]
-                revp5 = str(Seq(rev(str(p5))).complement())
-                ssLis.append([lane, sample, name, p7, revp5, proj])
-    return ssLis
 
 
 def parseSS(ss):
-    ssDic = {}
-    with open(ss) as f:
-        for line in f:
-            if not line.strip().startswith('[Data]') and not \
-                 line.strip().startswith('Lane'):
-                quer = line.strip().split(',')
-                lane = quer[0]
-                sample = quer[2]
-                if lane not in ssDic:
-                    ssDic[lane] = {}
-                if len(line.strip().split(',')) == 5:
-                    proj = quer[4]
-                    p7 = quer[3]
-                    if proj not in ssDic[lane]:
-                        ssDic[lane][proj] = {sample: [p7]}
-                    else:
-                        ssDic[lane][proj][sample] = [p7]
-                elif len(line.strip().split(',')) == 6:
-                    proj = quer[5]
-                    p7 = quer[3]
-                    p5 = quer[4]
-                    if proj not in ssDic[lane]:
-                        ssDic[lane][proj] = {sample: [p7, p5]}
-                    else:
-                        ssDic[lane][proj][sample] = [p7, p5]
-    return ssDic
+    ssdf = pd.read_csv(ss, comment='[')
+    ssdf = ssdf.dropna()
+    # Fetch the total number of reads per sample
+    readCount = []
+    for index, row in ssdf.iterrows():
+        projID = "Project_" + row['Sample_Project']
+        sampleID = "Sample_" + row['Sample_ID']
+        sampleName = row['Sample_Name']
+        zipStr = os.path.join("FASTQC_" + projID, sampleID, sampleName + "_R1_fastqc.zip")
+        if os.path.exists(zipStr):
+            readCount.append(grabZipCount(zipStr))
+        else:
+            readCount.append('NaN')
+    ssdf['readCount'] = readCount
+    if 'index2' in ssdf.columns:
+        pairedStatus = True
+    else:
+        pairedStatus = False
+    return ssdf, pairedStatus
 
 
-def parseUnd():
+def parseUnd(statFile, pairedStatus, depth):
     UndComb = {}
-    with open('Stats/Stats.json') as f:
+    with open(statFile) as f:
         stats = json.load(f)
-        for lane in stats['UnknownBarcodes']:
-            for comb in lane['Barcodes']:
-                if lane['Barcodes'][comb] > 500000:
-                    UndComb[comb] = lane['Barcodes'][comb]
-    return UndComb
+        if pairedStatus == True:
+            for lane in stats['UnknownBarcodes']:
+                for comb in lane['Barcodes']:
+                    if np.round(
+                        depth/lane['Barcodes'][comb]
+                    ) == 1 or \
+                    depth < lane['Barcodes'][comb]:
+                        print(str(comb) + ' ' + str(lane['Barcodes'][comb]))
+        #print(json.dumps((stats), sort_keys=True, indent=4))
+        #for lane in stats['UnknownBarcodes']:
+        #    for comb in lane['Barcodes']:
+        #        if lane['Barcodes'][comb] > 500000:
+        #            UndComb[comb] = lane['Barcodes'][comb]
+    #return UndComb
 
 # TODO This goes over the entire smaplesheet ,
 # we can improve it by adding a specific project to through

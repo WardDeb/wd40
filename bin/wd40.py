@@ -6,8 +6,6 @@ import wdforty.catRun
 import wdforty.barDiag
 import wdforty.QC
 import wdforty.Clump
-import wdforty.QCScreen
-import wdforty.umiCount
 import rich
 import sys
 import os
@@ -59,6 +57,13 @@ def main():
         '--projects',
         required=False,
         help=argparse.SUPPRESS
+    )
+    parser.add_argument(
+        '--depth',
+        required=False,
+        help=argparse.SUPPRESS,
+        type=int,
+        default=1000000
     )
     parser.formatter_class = lambda prog: argparse.RawDescriptionHelpFormatter(
         prog,
@@ -119,6 +124,7 @@ def main():
                         "using --projects Project1,Project2"))
             sys.exit()
         else:
+            rich.print("[bold cyan]catRun invoked![/bold cyan]")
             projects = args.projects.replace(' ', '').split(',')
             flowCells = args.flowCells.replace(' ', '').split(',')
             for proj in projects:
@@ -133,12 +139,28 @@ def main():
 
     # FastQC
     if args.command == 'FastQC':
-        rich.print("Running fastqc and multiqc")
+        rich.print("[bold cyan]QC invoked![/bold cyan]")
         fastQC = config['QC']['fastQCPath']
         multiQC = config['QC']['multiQCPath']
         wdforty.QC.fastQCrunner(fastQC, multiQC)
 
-    # if args.command == 'barDiag':
+    # barDiag
+    if args.command == 'barDiag':
+        rich.print("[bold cyan]barDiag invoked![/bold cyan]")
+        rich.print("Looking for [bold cyan]{}[/bold cyan] reads".format(args.depth))
+        rich.print("Use [bold cyan]--depth INT[/bold cyan] to change.")
+        if not os.path.exists('SampleSheet.csv'):
+            print('There is no SampleSheet.csv file.')
+            sys.exit()
+        else:
+            ssdf, pairedStatus = wdforty.barDiag.parseSS("SampleSheet.csv")
+        if not os.path.exists('Stats/Stats.json'):
+            print('There is no Stats/Stats.json file.')
+            sys.exit()
+        else:
+            wdforty.barDiag.parseUnd("Stats/Stats.json", pairedStatus, args.depth)
+        #print(pairedStatus)
+
     #    print("diagnosing some barcodes.")
         # ssDic = wdforty.barDiag.parseSS('SampleSheet.csv')
         # print(ssDic)
