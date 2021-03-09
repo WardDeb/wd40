@@ -150,15 +150,19 @@ def main():
         rich.print("Looking for [bold cyan]{}[/bold cyan] reads".format(args.depth))
         rich.print("Use [bold cyan]--depth INT[/bold cyan] to change.")
         if not os.path.exists('SampleSheet.csv'):
-            print('There is no SampleSheet.csv file.')
+            rich.print('There is no SampleSheet.csv file.')
             sys.exit()
         else:
             ssdf, pairedStatus = wdforty.barDiag.parseSS("SampleSheet.csv")
         if not os.path.exists('Stats/Stats.json'):
-            print('There is no Stats/Stats.json file.')
+            rich.print('There is no Stats/Stats.json file.')
             sys.exit()
         else:
-            wdforty.barDiag.parseUnd("Stats/Stats.json", pairedStatus, args.depth)
+            candidates = wdforty.barDiag.parseUnd("Stats/Stats.json", args.depth)
+        rich.print("[bold red]Undetermined candidates:[/bold red]")
+        rich.print(candidates)
+        rich.print("[bold red]Demux'ed samples:[/bold red]")
+        rich.print(ssdf[ssdf['readCount'] < args.depth])
         #print(pairedStatus)
 
     #    print("diagnosing some barcodes.")

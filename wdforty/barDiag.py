@@ -18,8 +18,8 @@ def grabZipCount(inputzip):
 
 def rev(string):
     return ''.join(reversed(string))
-
-#                 revp5 = str(Seq(rev(str(p5))).complement())
+# revp5 = str(Seq(rev(str(p5))).complement())
+# Could include an automatic reverser or something.
 
 
 
@@ -36,7 +36,7 @@ def parseSS(ss):
         if os.path.exists(zipStr):
             readCount.append(grabZipCount(zipStr))
         else:
-            readCount.append('NaN')
+            readCount.append(0)
     ssdf['readCount'] = readCount
     if 'index2' in ssdf.columns:
         pairedStatus = True
@@ -45,24 +45,24 @@ def parseSS(ss):
     return ssdf, pairedStatus
 
 
-def parseUnd(statFile, pairedStatus, depth):
+
+def parseUnd(statFile, depth):
     UndComb = {}
     with open(statFile) as f:
         stats = json.load(f)
-        if pairedStatus == True:
-            for lane in stats['UnknownBarcodes']:
-                for comb in lane['Barcodes']:
-                    if np.round(
-                        depth/lane['Barcodes'][comb]
-                    ) == 1 or \
-                    depth < lane['Barcodes'][comb]:
-                        print(str(comb) + ' ' + str(lane['Barcodes'][comb]))
-        #print(json.dumps((stats), sort_keys=True, indent=4))
-        #for lane in stats['UnknownBarcodes']:
-        #    for comb in lane['Barcodes']:
-        #        if lane['Barcodes'][comb] > 500000:
-        #            UndComb[comb] = lane['Barcodes'][comb]
-    #return UndComb
+        candidates = {}
+        for lane in stats['UnknownBarcodes']:
+            for comb in lane['Barcodes']:
+                if np.round(
+                    depth/lane['Barcodes'][comb]
+                ) == 1 or \
+                depth < lane['Barcodes'][comb]:
+                    if comb not in candidates:
+                        candidates[comb] = lane['Barcodes'][comb]
+        return candidates
+
+            
+
 
 # TODO This goes over the entire smaplesheet ,
 # we can improve it by adding a specific project to through
