@@ -17,6 +17,7 @@ setuptools.setup(
                      'flake8',
                      'rich',
                      'pandas',
-                     'numpy'],
+                     'numpy',
+                     'pytest'],
    python_requires='>3'
 )
