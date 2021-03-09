@@ -146,8 +146,12 @@ def main():
 
     # barDiag
     if args.command == 'barDiag':
-        rich.print("[bold cyan]barDiag invoked![/bold cyan]")
-        rich.print("Looking for [bold cyan]{}[/bold cyan] reads".format(args.depth))
+        rich.print(
+            "[bold cyan]barDiag invoked![/bold cyan]"
+            )
+        rich.print(
+            "Looking for [bold cyan]{}[/bold cyan] reads".format(args.depth)
+            )
         rich.print("Use [bold cyan]--depth INT[/bold cyan] to change.")
         if not os.path.exists('SampleSheet.csv'):
             rich.print('There is no SampleSheet.csv file.')
@@ -158,46 +162,13 @@ def main():
             rich.print('There is no Stats/Stats.json file.')
             sys.exit()
         else:
-            candidates = wdforty.barDiag.parseUnd("Stats/Stats.json", args.depth)
+            candidates = wdforty.barDiag.parseUnd(
+                "Stats/Stats.json", args.depth
+                )
         rich.print("[bold red]Undetermined candidates:[/bold red]")
         rich.print(candidates)
         rich.print("[bold red]Demux'ed samples:[/bold red]")
         rich.print(ssdf[ssdf['readCount'] < args.depth])
-        #print(pairedStatus)
-
-    #    print("diagnosing some barcodes.")
-        # ssDic = wdforty.barDiag.parseSS('SampleSheet.csv')
-        # print(ssDic)
-        # UndComb = wdforty.barDiag.parseUnd()
-        # print(UndComb)
-        # revSS = wdforty.barDiag.revP5('SampleSheet.csv')
-        # for i in revSS:
-        #    print(','.join(i))
-
-    # if args.command == 'QCScreen':
-    #    fastqScreen = config['QC']['fqScreenPath']
-    #    seqtk = config['QC']['seqtkPath']
-    #    screenconf = config['QC']['fqScreenConf']
-    #    wdforty.QCScreen.screenRunner(fastqScreen,screenconf, seqtk)
-
-    # if args.command == 'umiCount':
-    #    if not args.umiFqFile:
-    #        print("Specify --umiFqFile (R1 or R2)")
-    #        sys.exit()
-    #    elif not args.umi:
-    #        print("Specify --umi SEQUENCE")
-    #        sys.exit()
-    #    else:
-    #        resDic = wdforty.umiCount.umiCounter(args.umi, args.umiFqFile)
-    #        print(resDic)
-
-    # if args.command == 'linkscReads':
-    #    print("Linking some fqs inside 'fqs' dir.")
-        # if not args.projects:
-        #    print("Specify a project directory.")
-        #    sys.exit()
-        # else:
-        #    wdforty.misc.scLinker(args.projects)
 
 
 if __name__ == "__main__":
