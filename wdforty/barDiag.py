@@ -6,6 +6,7 @@ import pandas as pd
 import os
 import numpy as np
 from Bio.Seq import Seq
+import rich
 
 
 def grabZipCount(inputzip):
@@ -19,8 +20,7 @@ def grabZipCount(inputzip):
 
 
 def revC(string):
-    revStr = ''.join(reversed(string))
-    return str(Seq(revStr.complement()))
+    return str(Seq(string).reverse_complement())
 
 
 def parseSS(ss):
@@ -59,3 +59,32 @@ def parseUnd(statFile, depth):
                     if comb not in candidates:
                         candidates[comb] = lane['Barcodes'][comb]
         return candidates
+
+def crapMatcher(ssdf, pairedStatus, candidates, depth):
+    # Fetch the combinations in candidates.
+    if pairedStatus == True:
+        candNes = []
+        for indexPair in candidates:
+            candNes.append([
+                indexPair.split('+')[0],
+                indexPair.split('+')[1]
+            ])
+        samplesDic = {}
+        for index, row in ssdf[ssdf['readCount'] < depth].iterrows():
+            samplesDic[row['Sample_Name']] = [
+                row['index'],
+                row['index2']
+            ]
+        updateDic = {}
+        for failure in samplesDic:
+            for candidate in candNes:
+                if samplesDic[failure][0] in candidate and revC(samplesDic[failure][1]) in candidate:
+                    updateDic[failure] = candidate
+        updateDF = ssdf
+        for update in updateDic:
+            updateDF.loc[updateDF['Sample_Name'] == update, 'index'] = updateDic[update][0]
+            updateDF.loc[updateDF['Sample_Name'] == update, 'index2'] = updateDic[update][1]
+        del updateDF['readCount']
+        return updateDF, len(updateDic)
+
+        

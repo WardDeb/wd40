@@ -9,6 +9,7 @@ import wdforty.Clump
 import rich
 import sys
 import os
+import pandas as pd
 
 
 def main():
@@ -167,8 +168,16 @@ def main():
                 )
         rich.print("[bold red]Undetermined candidates:[/bold red]")
         rich.print(candidates)
-        rich.print("[bold red]Demux'ed samples:[/bold red]")
-        rich.print(ssdf[ssdf['readCount'] < args.depth])
+        rich.print("[bold red]Badly demux'ed samples:[/bold red]")
+        rich.print(ssdf[ssdf['readCount'] < args.depth]['Sample_Name'])
+        updateDF, nChanges = wdforty.barDiag.crapMatcher(ssdf, pairedStatus, candidates, args.depth)
+        rich.print(updateDF)
+        rich.print("A total of {} combinations have been changed.".format(nChanges))
+        if nChanges > 0:
+            with open('SampleSheet_new.csv', 'w') as f:
+                f.write('[Data]')
+            updateDF.to_csv('SampleSheet_new.csv', index=False)
+        
 
 
 if __name__ == "__main__":
