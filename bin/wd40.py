@@ -179,7 +179,6 @@ def main():
                 f.write('[Data]')
             updateDF.to_csv('SampleSheet_new.csv', index=False)
             rich.print("New sampleSheet written.")
-        
 
 
 if __name__ == "__main__":
