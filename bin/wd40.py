@@ -170,15 +170,16 @@ def main():
         rich.print(candidates)
         rich.print("[bold red]Badly demux'ed samples:[/bold red]")
         rich.print(ssdf[ssdf['readCount'] < args.depth]['Sample_Name'])
-        updateDF, nChanges = wdforty.barDiag.crapMatcher(ssdf, pairedStatus, candidates, args.depth)
-        rich.print("A total of {} combinations have been changed.".format(nChanges))
-        if nChanges > 0:
-            if os.path.exists('SampleSheet_new.csv'):
-                os.remove('SampleSheet_new.csv')
-            with open('SampleSheet_new.csv', 'w') as f:
-                f.write('[Data]')
-            updateDF.to_csv('SampleSheet_new.csv', index=False)
-            rich.print("New sampleSheet written.")
+        if pairedStatus == True:
+            updateDF, nChanges = wdforty.barDiag.crapMatcher(ssdf, pairedStatus, candidates, args.depth)
+            rich.print("A total of {} combinations have been changed.".format(nChanges))
+            if nChanges > 0:
+                if os.path.exists('SampleSheet_new.csv'):
+                    os.remove('SampleSheet_new.csv')
+                with open('SampleSheet_new.csv', 'w') as f:
+                    f.write('[Data]')
+                updateDF.to_csv('SampleSheet_new.csv', index=False)
+                rich.print("New sampleSheet written.")
 
 
 if __name__ == "__main__":

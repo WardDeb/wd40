@@ -86,5 +86,3 @@ def crapMatcher(ssdf, pairedStatus, candidates, depth):
             updateDF.loc[updateDF['Sample_Name'] == update, 'index2'] = updateDic[update][1]
         del updateDF['readCount']
         return updateDF, len(updateDic)
-
-        
