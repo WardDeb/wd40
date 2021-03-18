@@ -96,6 +96,10 @@ def main():
     args = parser.parse_args()
 
     # noArgs functions.
+
+    # chModder
+    if args.command == 'chModder':
+        wdforty.misc.chModder()
     # projCP mode.
     if args.command == 'projCP':
         rich.print("[bold cyan]ProjCP invoked![/bold cyan]")

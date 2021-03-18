@@ -6,6 +6,19 @@ import glob
 import rich
 
 
+def chModder(prefix):
+    projList = glob.glob("Project_*")
+    for proj in projList:
+        PI = proj.split('_')[-1].lower()
+        flowCell = os.path.abspath("./").split('/')[-1]
+        if os.path.exists(os.path.join(prefix, PI, "sequencing_data",flowCell)):
+            # CHMODDER
+            # take care of ana
+        elif os.path.exists(os.path.join(prefix, PI, "sequencing_data2",flowCell)):
+            # CHMODDER
+            # take care of ana
+        
+
 def projCP(destination):
     rich.print(
         "Shipping to [bold magenta]{}[/bold magenta]...".format(destination))
