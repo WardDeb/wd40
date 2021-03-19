@@ -4,19 +4,27 @@ import psutil
 import subprocess
 import glob
 import rich
+import stat
 
 
 def chModder(prefix):
     projList = glob.glob("Project_*")
-    for proj in projList:
-        PI = proj.split('_')[-1].lower()
-        flowCell = os.path.abspath("./").split('/')[-1]
-        if os.path.exists(os.path.join(prefix, PI, "sequencing_data",flowCell)):
-            # CHMODDER
-            # take care of ana
-        elif os.path.exists(os.path.join(prefix, PI, "sequencing_data2",flowCell)):
-            # CHMODDER
-            # take care of ana
+    if len(projList) > 0:
+        for proj in projList:
+            PI = proj.split('_')[-1].lower()
+            flowCell = os.path.abspath("./").split('/')[-1]
+            if os.path.exists(os.path.join(prefix, PI, "sequencing_data",flowCell)):
+                clipPath = os.path.join(prefix, PI, "sequencing_data",flowCell)
+            elif os.path.exists(os.path.join(prefix, PI, "sequencing_data2",flowCell)):
+                clipPath = os.path.join(prefix, PI, "sequencing_data",flowCell)
+            for r, dirs, files in os.walk(clipPath):
+                for d in dirs:
+                    os.chmod(os.path.join(r, d), stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP)
+                for f in files:
+                    os.chmod(os.path.join(r, f), stat.S_IRWXU | stat.S_IRGRP)
+            rich.print("Released [bold green]{}[/bold green]".format(proj))
+    else:
+        rich.print("No Projects found.")
         
 
 def projCP(destination):

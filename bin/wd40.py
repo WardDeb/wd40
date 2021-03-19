@@ -27,7 +27,8 @@ def main():
                         "(locations defined in wd40.ini)."),
             "FastQC": ("Run FastQC and multiQC from a flowcell folder. "
                        "Handy if you generated these with catRun."),
-            "QCScreen": ("Run fastq_screen on a flowcell folder.")
+            "QCScreen": ("Run fastq_screen on a flowcell folder."),
+            "chModder": ("Open up permissions for projects in their end loc")
         },
         "Args": {
             "catRun": ("Cat together fastq files from multiple flowcells."),
@@ -42,6 +43,7 @@ def main():
         choices=['barDiag',
                  'bigClump',
                  'catRun',
+                 'chModder',
                  'projCP',
                  'storHam',
                  'FastQC',
@@ -99,7 +101,7 @@ def main():
 
     # chModder
     if args.command == 'chModder':
-        wdforty.misc.chModder()
+        wdforty.misc.chModder(config['storageHammer']['prefix'])
     # projCP mode.
     if args.command == 'projCP':
         rich.print("[bold cyan]ProjCP invoked![/bold cyan]")
