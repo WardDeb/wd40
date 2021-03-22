@@ -26,6 +26,7 @@ def revC(string):
 def parseSS(ss):
     ssdf = pd.read_csv(ss, comment='[')
     ssdf = ssdf.dropna()
+    ssdf = ssdf.replace(' ', '_', regex=True)
     # Fetch the total number of reads per sample
     readCount = []
     for index, row in ssdf.iterrows():
@@ -38,6 +39,7 @@ def parseSS(ss):
         if os.path.exists(zipStr):
             readCount.append(grabZipCount(zipStr))
         else:
+            rich.print("Warning, {} not found.".format(zipStr))
             readCount.append(0)
     ssdf['readCount'] = readCount
     if 'index2' in ssdf.columns:
@@ -62,27 +64,27 @@ def parseUnd(statFile, depth):
 
 def crapMatcher(ssdf, pairedStatus, candidates, depth):
     # Fetch the combinations in candidates.
-    if pairedStatus == True:
-        candNes = []
-        for indexPair in candidates:
-            candNes.append([
-                indexPair.split('+')[0],
-                indexPair.split('+')[1]
-            ])
-        samplesDic = {}
-        for index, row in ssdf[ssdf['readCount'] < depth].iterrows():
-            samplesDic[row['Sample_Name']] = [
-                row['index'],
-                row['index2']
-            ]
-        updateDic = {}
-        for failure in samplesDic:
-            for candidate in candNes:
-                if samplesDic[failure][0] in candidate and revC(samplesDic[failure][1]) in candidate:
-                    updateDic[failure] = candidate
-        updateDF = ssdf
-        for update in updateDic:
-            updateDF.loc[updateDF['Sample_Name'] == update, 'index'] = updateDic[update][0]
-            updateDF.loc[updateDF['Sample_Name'] == update, 'index2'] = updateDic[update][1]
-        del updateDF['readCount']
-        return updateDF, len(updateDic)
+    # if pairedStatus == True:
+    candNes = []
+    for indexPair in candidates:
+        candNes.append([
+            indexPair.split('+')[0],
+            indexPair.split('+')[1]
+        ])
+    samplesDic = {}
+    for index, row in ssdf[ssdf['readCount'] < depth].iterrows():
+        samplesDic[row['Sample_Name']] = [
+            row['index'],
+            row['index2']
+        ]
+    updateDic = {}
+    for failure in samplesDic:
+        for candidate in candNes:
+            if samplesDic[failure][0] in candidate and revC(samplesDic[failure][1]) in candidate:
+                updateDic[failure] = candidate
+    updateDF = ssdf
+    for update in updateDic:
+        updateDF.loc[updateDF['Sample_Name'] == update, 'index'] = updateDic[update][0]
+        updateDF.loc[updateDF['Sample_Name'] == update, 'index2'] = updateDic[update][1]
+    del updateDF['readCount']
+    return updateDF, len(updateDic)

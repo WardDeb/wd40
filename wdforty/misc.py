@@ -16,12 +16,14 @@ def chModder(prefix):
             if os.path.exists(os.path.join(prefix, PI, "sequencing_data",flowCell)):
                 clipPath = os.path.join(prefix, PI, "sequencing_data",flowCell)
             elif os.path.exists(os.path.join(prefix, PI, "sequencing_data2",flowCell)):
-                clipPath = os.path.join(prefix, PI, "sequencing_data",flowCell)
+                clipPath = os.path.join(prefix, PI, "sequencing_data2",flowCell)
+            print(clipPath)
             for r, dirs, files in os.walk(clipPath):
                 for d in dirs:
-                    os.chmod(os.path.join(r, d), stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP)
+                    print(d)
+                    os.chmod(os.path.join(r, d), 0o750)
                 for f in files:
-                    os.chmod(os.path.join(r, f), stat.S_IRWXU | stat.S_IRGRP)
+                    os.chmod(os.path.join(r, f), 0o750)
             rich.print("Released [bold green]{}[/bold green]".format(proj))
     else:
         rich.print("No Projects found.")

@@ -28,5 +28,6 @@ def fastQCrunner(fastQC, multiQC):
                     'multiqc_report.html')):
                 multiQCcmd = [multiQC, '-o', projectDir, QCpath]
                 subprocess.run(multiQCcmd)
+                os.remove(os.path.join(projectDir, 'multiqc_data'))
             else:
                 rich.print("multiQC exists already. Carry on.")
