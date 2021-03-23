@@ -20,7 +20,6 @@ def chModder(prefix):
             print(clipPath)
             for r, dirs, files in os.walk(clipPath):
                 for d in dirs:
-                    print(d)
                     os.chmod(os.path.join(r, d), 0o750)
                 for f in files:
                     os.chmod(os.path.join(r, f), 0o750)
