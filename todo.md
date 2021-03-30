@@ -3,5 +3,5 @@
   - [ ] barDiag
   - [ ] covtest
   - [ ] scLinker
-  - [ ] QC & screen
+  - [ ] QCscreen runner
   - [ ] projLinker (after analysis)

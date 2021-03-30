@@ -6,6 +6,8 @@ import wdforty.catRun
 import wdforty.barDiag
 import wdforty.QC
 import wdforty.Clump
+import wdforty.QCScreen
+import glob
 import rich
 import sys
 import os
@@ -27,7 +29,7 @@ def main():
                         "(locations defined in wd40.ini)."),
             "FastQC": ("Run FastQC and multiQC from a flowcell folder. "
                        "Handy if you generated these with catRun."),
-            "QCScreen": ("Run fastq_screen on a flowcell folder."),
+            "QCScreenPLOT": ("Searches for QCscreen txts and plots them."),
             "chModder": ("Open up permissions for projects in their end loc")
         },
         "Args": {
@@ -47,7 +49,7 @@ def main():
                  'projCP',
                  'storHam',
                  'FastQC',
-                 'QCScreen',
+                 'QCScreenPLOT',
                  'umiCount',
                  'linkscReads'],
         help=argparse.SUPPRESS)
@@ -186,6 +188,15 @@ def main():
                     f.write('[Data]')
                 updateDF.to_csv('SampleSheet_new.csv', index=False)
                 rich.print("New sampleSheet written.")
+    if args.command == 'QCScreenPLOT':
+        print("invoke QCscreenPLOT")
+        if not os.path.exists("QCscreenOut"):
+            os.mkdir("QCscreenOut")
+            for screen in glob.glob("*/*_screen.txt"):
+                print("Plotting {}".format(screen))
+                outFile = os.path.join("QCscreenOut", screen.split('/')[-1].replace('_screen.txt', '.png'))
+                wdforty.QCScreen.plotFastqScreen(screen, outFile)
+        wdforty.QCScreen.qcscreenToPdf()
 
 
 if __name__ == "__main__":
