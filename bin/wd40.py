@@ -70,6 +70,14 @@ def main():
         type=int,
         default=1000000
     )
+    parser.add_argument(
+        '--machine',
+        required=False,
+        help=argparse.SUPPRESS,
+        type=str,
+        default='novaSeq',
+        choices=['novaSeq', 'nextSeq']
+    )
     parser.formatter_class = lambda prog: argparse.RawDescriptionHelpFormatter(
         prog,
         max_help_position=25,
@@ -120,9 +128,18 @@ def main():
     # bigClump
     if args.command == 'bigClump':
         rich.print("[bold cyan]Serial Clumpification invoked.[/bold cyan]")
-        wdforty.Clump.clumpRunner(
-            config['QC']['clumpifyPath'],
-            config['QC']['splitFQPath'])
+        if args.machine:
+            rich.print("[bold red]Setting clump opts for {}[/bold red]".format(args.machine))
+            wdforty.Clump.clumpRunner(
+                config['QC']['clumpifyPath'],
+                config['QC']['splitFQPath'],
+                args.machine)
+        else:
+            rich.print("[bold red]Setting clump opts for novaSeq[/bold red]")
+            wdforty.Clump.clumpRunner(
+                config['QC']['clumpifyPath'],
+                config['QC']['splitFQPath'])
+
 
     # catRun
     if args.command == 'catRun':
