@@ -64,21 +64,38 @@ def clumpRunner(clumploc, splitFQ, machine='Nova'):
                     out = 'out=' + os.path.join(sample, 'temp.fq.gz')
                     R1 = 'in=' + sorted(fqFiles)[0]
                     R2 = 'in2=' + sorted(fqFiles)[1]
-                    clumpCmd = [clumploc,
-                                'dupesubs=0',
-                                'qin=33',
-                                'markduplicates=t',
-                                'optical=t',
-                                'dupedist=12000',
-                                '-Xmx220G',
-                                'threads=20',
-                                R1,
-                                R2,
-                                out]
-                    fqBase = sorted(
-                        fqFiles
-                        )[0].split('/')[-1].replace("_R1.fastq.gz", "")
-                    splitCmd = [splitFQ, 'temp.fq.gz', '1', fqBase, '20']
+                    if machine == 'Nova':
+                        clumpCmd = [clumploc,
+                                    'dupesubs=0',
+                                    'qin=33',
+                                    'markduplicates=t',
+                                    'optical=t',
+                                    'dupedist=12000',
+                                    '-Xmx220G',
+                                    'threads=20',
+                                    R1,
+                                    R2,
+                                    out]
+                        fqBase = sorted(
+                            fqFiles
+                            )[0].split('/')[-1].replace("_R1.fastq.gz", "")
+                        splitCmd = [splitFQ, 'temp.fq.gz', '1', fqBase, '20']
+                    elif machine == 'nextSeq':
+                        clumpCmd = [
+                            clumploc,
+                            'dupesubs=0',
+                            'qin=33',
+                            'markduplicates=t',
+                            'optical=t',
+                            '-Xmx220G',
+                            'threads=20',
+                            'spany=t',
+                            'adjacent=t',
+                            'dupedist=40',
+                            R1,
+                            R2,
+                            out
+                        ]
                     print(' '.join(splitCmd))
                     subprocess.run(clumpCmd)
                     os.chdir(sample)
