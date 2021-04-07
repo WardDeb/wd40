@@ -2,6 +2,7 @@ import os
 import subprocess
 import glob
 import rich
+import shutil
 
 
 def fastQCrunner(fastQC, multiQC):
@@ -28,6 +29,6 @@ def fastQCrunner(fastQC, multiQC):
                     'multiqc_report.html')):
                 multiQCcmd = [multiQC, '-o', projectDir, QCpath]
                 subprocess.run(multiQCcmd)
-                os.remove(os.path.join(projectDir, 'multiqc_data'))
+                shutil.rmtree(os.path.join(projectDir, 'multiqc_data'))
             else:
                 rich.print("multiQC exists already. Carry on.")
