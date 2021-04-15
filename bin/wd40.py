@@ -30,7 +30,8 @@ def main():
             "FastQC": ("Run FastQC and multiQC from a flowcell folder. "
                        "Handy if you generated these with catRun."),
             "QCScreenPLOT": ("Searches for QCscreen txts and plots them."),
-            "chModder": ("Open up permissions for projects in their end loc")
+            "chModder": ("Open up permissions for projects in their end loc"),
+            "sambaDup": ("Parse a bunch of markdup.txt files")
         },
         "Args": {
             "catRun": ("Cat together fastq files from multiple flowcells."),
@@ -51,7 +52,8 @@ def main():
                  'FastQC',
                  'QCScreenPLOT',
                  'umiCount',
-                 'linkscReads'],
+                 'linkscReads',
+                 'sambaDup'],
         help=argparse.SUPPRESS)
     parser.add_argument(
         '--flowCells',
@@ -108,7 +110,9 @@ def main():
     args = parser.parse_args()
 
     # noArgs functions.
-
+    # sambaDup
+    if args.command == 'sambaDup':
+        wdforty.misc.sambaDup()
     # chModder
     if args.command == 'chModder':
         wdforty.misc.chModder(config['storageHammer']['prefix'])

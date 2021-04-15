@@ -6,6 +6,17 @@ import glob
 import rich
 import stat
 
+def sambaDup():
+    dupLis = glob.glob("./*markdup.txt")
+    for sample in sorted(dupLis):
+        name = sample.replace(".markdup.txt","")
+        with open(sample) as f:
+            for line in f:
+                if 'mapped' in line.strip() and 'mate' not in line.strip():
+                    mappedReads = int(line.strip().split(' ')[0])
+                if 'duplicates' in line.strip():
+                    dupReads = int(line.strip().split(' ')[0])
+        rich.print("{} Mapped: {} Duplicates: {} percentage: {}".format(name, mappedReads, dupReads, (dupReads*100)/mappedReads))
 
 def chModder(prefix):
     projList = glob.glob("Project_*")
