@@ -2,6 +2,7 @@ import glob
 import numpy as np
 import argparse
 import sys
+import pandas as pd
 
 
 
@@ -12,7 +13,7 @@ resDic['fly'] = {}
 resDic['mouse'] = {}
 
 for i in glob.glob('*/*/*.markdup.txt'):
-    org = str(i).split('/')[0].replace('Out','')
+    org = str(i).split('/')[0].replace('OUT','')
     name = str(i).split('/')[-1].replace('.markdup.txt','')
     if name not in resDic[org]:
         resDic[org][name] = {}
@@ -84,22 +85,47 @@ for i in glob.glob('*FQSCR/*R1_screen.txt'):
                     else:
                         qcScreenDic[org][InputN]['Genome'].append(float(line.strip().split()[5] ) + float( line.strip().split()[7] ) + float(line.strip().split()[9] ) + float (line.strip().split()[11]) )
 
+for i in glob.glob('*/deepTools_qc/plotEnrichment/plotEnrichment.tsv'):
+    org = str(i).split('/')[0].replace('OUT','')
+    tempDic[org]['low']['geneFrac'] = []
+    tempDic[org]['high']['geneFrac'] = []
+    with open(i) as f:
+        for line in f:
+            if line.strip().split()[1] == 'gene':
+                name = line.strip().split()[0]
+                print(name)
+                if '100ng' not in name:
+                    tempDic[org]['low']['geneFrac'].append(float(line.strip().split()[2]))
+                if '100ng' in name:
+                    tempDic[org]['high']['geneFrac'].append(float(line.strip().split()[2]))
+
+for i in glob.glob("*/featureCounts/*.counts.txt"):
+    org = str(i).split('/')[0].replace('OUT','')
+    if '100ng' not in i:
+        if 'geneCov' not in tempDic[org]['low']:
+            tempDic[org]['low']['geneCov'] = []
+        tempDF = pd.read_csv(i, sep='\t', comment='#', header=0)
+        tempDF.columns = ['Geneid', 'Chr', 'Start', 'End', 'Strand', 'Length', 'Count']
+        print(str(len(tempDF[tempDF['Count'] != 0])/len(tempDF)))
 
 
-print("{}\t{}\t{}\t{}\t{}\t{}".format('organism','sampleType', 'genome%', 'duplication%','rRNA%', 'Mito%'))
+
+print("{}\t{}\t{}\t{}\t{}\t{}\t{}".format('organism','sampleType', 'genome%', 'duplication%','rRNA%', 'Mito%', 'Gene%'))
 for org in tempDic:
-    print("{}\t{}\t{}\t{}\t{}\t{}".format(org, 'low Input',
+    print("{}\t{}\t{}\t{}\t{}\t{}\t{}".format(org, 'low Input',
                               str(np.round(np.mean(qcScreenDic[org]['low']['Genome']), 2 )) + '±' + str(np.round(np.std(qcScreenDic[org]['low']['Genome']), 2)),
                               str(np.round(np.mean(tempDic[org]['low']['dupFrac']) * 100, 2)) + '±' + str(np.round(np.std(tempDic[org]['low']['dupFrac']) * 100,2)),
                               str(np.round(np.mean(qcScreenDic[org]['low']['rRNA']), 2 )) + '±' + str(np.round(np.std(qcScreenDic[org]['low']['rRNA']), 2)),
                               str(np.round(np.mean(qcScreenDic[org]['low']['Mito']), 2 )) + '±' + str(np.round(np.std(qcScreenDic[org]['low']['Mito']), 2)),
+                              str(np.round(np.mean(tempDic[org]['low']['geneFrac']), 2 )) + '±' + str(np.round(np.std(tempDic[org]['low']['geneFrac']), 2)),
                              )
          )
-    print("{}\t{}\t{}\t{}\t{}\t{}".format(org, 'high Input',
+    print("{}\t{}\t{}\t{}\t{}\t{}\t{}".format(org, 'high Input',
                               str(np.round(np.mean(qcScreenDic[org]['high']['Genome']), 2 )) + '±' + str(np.round(np.std(qcScreenDic[org]['high']['Genome']), 2)),
                               str(np.round(np.mean(tempDic[org]['high']['dupFrac']) * 100, 2)) + '±' + str(np.round(np.std(tempDic[org]['high']['dupFrac']) * 100,2)),
                               str(np.round(np.mean(qcScreenDic[org]['high']['rRNA']), 2 )) + '±' + str(np.round(np.std(qcScreenDic[org]['high']['rRNA']), 2)),
                               str(np.round(np.mean(qcScreenDic[org]['high']['Mito']), 2 )) + '±' + str(np.round(np.std(qcScreenDic[org]['high']['Mito']), 2)),
+                              str(np.round(np.mean(tempDic[org]['high']['geneFrac']), 2 )) + '±' + str(np.round(np.std(tempDic[org]['high']['geneFrac']), 2)),
                              )
          )
 
