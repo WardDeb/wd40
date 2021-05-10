@@ -31,9 +31,11 @@ def chModder(prefix):
             print(clipPath)
             for r, dirs, files in os.walk(clipPath):
                 for d in dirs:
-                    os.chmod(os.path.join(r, d), 0o750)
+                    if 'Analysis' not in os.path.join(r, d):
+                        os.chmod(os.path.join(r, d), 0o750)
                 for f in files:
-                    os.chmod(os.path.join(r, f), 0o750)
+                    if 'Analysis' not in (os.path.join(r, f)):
+                        os.chmod(os.path.join(r, f), 0o750)
             rich.print("Released [bold green]{}[/bold green]".format(proj))
     else:
         rich.print("No Projects found.")
