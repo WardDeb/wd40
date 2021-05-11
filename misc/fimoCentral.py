@@ -11,7 +11,7 @@ with open(args.i) as fimoOut:
         if not line.startswith('motif') and not line.startswith('#') and len(line.strip().split()) > 0:
             pval = float(line.strip().split()[7])
             qval = float(line.strip().split()[8])
-            if pval < 0.05 and qval < 0.05:
+            if pval < 0.05 and qval < 0.1:
                 seqName = line.strip().split()[2]
                 seqStart = int(seqName.split('_')[1])
                 seqStop = int(seqName.split('_')[2])
