@@ -18,7 +18,7 @@ with open(args.i) as fimoOut:
                 chrStr = seqName.split('_')[0]
                 motStart = int(line.strip().split()[3])
                 motStop = int(line.strip().split()[4])
-                bedFormat.append([str(chrStr), str((seqStart+motStart)-10 ),str((seqStart+motStop) + 10)])
+                bedFormat.append([str(chrStr), str((seqStart+motStart)-100 ),str((seqStart+motStop) + 100)])
 
 for i in bedFormat:
     print("{}\t{}\t{}".format(i[0],i[1],i[2]))
