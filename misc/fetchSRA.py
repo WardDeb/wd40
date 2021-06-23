@@ -2,6 +2,35 @@ import argparse
 import os
 import subprocess
 import glob
+from multiprocessing import Pool
+
+def grabber(acc, outName):
+    # Fetch
+    fetchCMD = ['prefetch',acc]
+    print(
+        "Fetching {}".format(acc)
+    )
+    subprocess.run(fetchCMD)
+    # Ship
+    os.rename(os.path.join(acc, acc + '.sra'), acc + '.sra')
+    os.rmdir(acc)
+    # Dump
+    dumpCMD = ['fastq-dump','--split-3', acc + '.sra']
+    print(
+        "Dumping {}".format(acc)
+    )
+    subprocess.run(dumpCMD)
+    # Ship and compress.
+    os.remove(acc + '.sra')
+    # Iterate over all fastqs.
+    for read in glob.glob(acc + "*fastq"):
+        compCMD = ['pigz', '-p', '20', read]
+        subprocess.run(compCMD)
+        inputstr = read + '.gz'
+        targetstr = inputstr.replace(acc, outName)
+        print("renaming {} into {}".format(inputstr, targetstr))
+        os.rename(inputstr, targetstr)
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -16,36 +45,15 @@ def main():
     
     args = parser.parse_args()
 
-    sra = {}
+    sra = []
+    outName = []
     with open(args.i) as f:
         for line in f:
-            sra[line.strip().split()[0]] = line.strip().split()[1]
-    for acc in sra:
-        # Fetch
-        fetchCMD = ['prefetch',acc]
-        print(
-            "Fetching {}".format(acc)
-        )
-        subprocess.run(fetchCMD)
-        # Ship
-        os.rename(os.path.join(acc, acc + '.sra'), acc + '.sra')
-        os.rmdir(acc)
-        # Dump
-        dumpCMD = ['fastq-dump','--split-3', acc + '.sra']
-        print(
-            "Dumping {}".format(acc)
-        )
-        subprocess.run(dumpCMD)
-        # Ship and compress.
-        os.remove(acc + '.sra')
-        # Iterate over all fastqs.
-        for read in glob.glob(acc + "*fastq"):
-            compCMD = ['pigz', '-p', '20', read]
-            subprocess.run(compCMD)
-            inputstr = read + '.gz'
-            targetstr = inputstr.replace(acc, sra[acc])
-            print("renaming {} into {}".format(inputstr, targetstr))
-            os.rename(inputstr, targetstr)
+            sra.append(line.strip().split()[0])
+            outName.append(line.strip().split()[1])
+    processPool = Pool(5)
+    combinations = list(zip(sra, outName))
+    processPool.starmap(grabber, combinations)
 
 if __name__ == "__main__":
     main()
