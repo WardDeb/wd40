@@ -66,6 +66,8 @@ for i in glob.glob('*FQSCR/*R1_screen.txt'):
         InputN = 'high'
     elif '10ng' in i:
         InputN = 'low'
+    elif '25ng' in i:
+        InputN = 'low'
     else:
         print("cant see input wtf: {}".format(i))
         sys.exit()

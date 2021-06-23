@@ -35,7 +35,7 @@ def chModder(prefix):
                         os.chmod(os.path.join(r, d), 0o750)
                 for f in files:
                     if 'Analysis' not in (os.path.join(r, f)):
-                        os.chmod(os.path.join(r, f), 0o750)
+                        os.chmod(os.path.join(r, f), 0o750)                
             rich.print("Released [bold green]{}[/bold green]".format(proj))
     else:
         rich.print("No Projects found.")
