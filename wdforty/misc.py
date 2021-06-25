@@ -22,21 +22,25 @@ def chModder(prefix):
     projList = glob.glob("Project_*")
     if len(projList) > 0:
         for proj in projList:
-            PI = proj.split('_')[-1].lower()
-            flowCell = os.path.abspath("./").split('/')[-1]
-            if os.path.exists(os.path.join(prefix, PI, "sequencing_data",flowCell)):
-                clipPath = os.path.join(prefix, PI, "sequencing_data",flowCell)
-            elif os.path.exists(os.path.join(prefix, PI, "sequencing_data2",flowCell)):
-                clipPath = os.path.join(prefix, PI, "sequencing_data2",flowCell)
-            print(clipPath)
-            for r, dirs, files in os.walk(clipPath):
-                for d in dirs:
-                    if 'Analysis' not in os.path.join(r, d):
-                        os.chmod(os.path.join(r, d), 0o750)
-                for f in files:
-                    if 'Analysis' not in (os.path.join(r, f)):
-                        os.chmod(os.path.join(r, f), 0o750)                
-            rich.print("Released [bold green]{}[/bold green]".format(proj))
+            # Skip PIs not from the institute.
+            if len(proj.split('_')) == 4:
+                PI = proj.split('_')[-1].lower()
+                flowCell = os.path.abspath("./").split('/')[-1]
+                if os.path.exists(os.path.join(prefix, PI, "sequencing_data",flowCell)):
+                    clipPath = os.path.join(prefix, PI, "sequencing_data",flowCell)
+                elif os.path.exists(os.path.join(prefix, PI, "sequencing_data2",flowCell)):
+                    clipPath = os.path.join(prefix, PI, "sequencing_data2",flowCell)
+                print(clipPath)
+                for r, dirs, files in os.walk(clipPath):
+                    for d in dirs:
+                        if 'Analysis' not in os.path.join(r, d):
+                            os.chmod(os.path.join(r, d), 0o750)
+                    for f in files:
+                        if 'Analysis' not in (os.path.join(r, f)):
+                            os.chmod(os.path.join(r, f), 0o750)                
+                rich.print("Released [bold green]{}[/bold green]".format(proj))
+            else:
+                rich.print("Skipped [bold green]{}[/bold green]".format(proj))
     else:
         rich.print("No Projects found.")
         
