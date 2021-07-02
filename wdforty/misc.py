@@ -30,6 +30,8 @@ def chModder(prefix):
                     clipPath = os.path.join(prefix, PI, "sequencing_data",flowCell)
                 elif os.path.exists(os.path.join(prefix, PI, "sequencing_data2",flowCell)):
                     clipPath = os.path.join(prefix, PI, "sequencing_data2",flowCell)
+                elif os.path.exists(os.path.join(prefix, PI, "sequencing_data3", flowCell)):
+                    clipPath = os.path.join(prefix, PI, "sequencing_data3", flowCell)
                 print(clipPath)
                 for r, dirs, files in os.walk(clipPath):
                     for d in dirs:
