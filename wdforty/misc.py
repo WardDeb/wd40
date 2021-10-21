@@ -25,6 +25,8 @@ def chModder(prefix):
             # Skip PIs not from the institute.
             if len(proj.split('_')) == 4:
                 PI = proj.split('_')[-1].lower()
+                if PI == 'cabezas-wallscheid':
+                    PI = 'cabezas'
                 flowCell = os.path.abspath("./").split('/')[-1]
                 if os.path.exists(os.path.join(prefix, PI, "sequencing_data",flowCell)):
                     clipPath = os.path.join(prefix, PI, "sequencing_data",flowCell)
