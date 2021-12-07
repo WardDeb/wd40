@@ -25,11 +25,11 @@ for ame in ameFiles:
                         catchMotfs.append(motif)
 
 catchMotfs = set(catchMotfs)
-
+catch = False
 with open(args.j) as f:
     for line in f:
-        if line.startswith('>'):
-            mot = line.strip().replace('>','')
+        if line.startswith('MOTIF'):
+            mot = line.strip().replace('MOTIF ','')
             if mot in catchMotfs:
                 catch = True
                 print(line.strip())
