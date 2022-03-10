@@ -4,11 +4,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import os
 import glob
-from reportlab.platypus import BaseDocTemplate, Table, Preformatted, Paragraph, Spacer, Image, Frame, NextPageTemplate, PageTemplate, TableStyle, PageBreak, ListFlowable, ListItem
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.platypus import BaseDocTemplate
-from reportlab.lib.pagesizes import A4, landscape
-from reportlab.lib import colors, utils
 
 # Taken directly from bcl2fastq.
 

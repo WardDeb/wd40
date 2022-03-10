@@ -7,7 +7,7 @@ setuptools.setup(
    description='Stuff to make my life easier.',
    author="Deboutte",
    author_email="deboutte@ie-freiburg.mpg.de",
-   scripts=['bin/wd40.py'],
+   scripts=['bin/wd40'],
    packages=['wdforty'],
    include_package_data=False,
    install_requires=['configparser',

@@ -127,5 +127,19 @@ def fastQC(projectDir):
 
 def getConfig():
     config = configparser.ConfigParser()
-    config.read("%s/wd40.ini" % os.path.expanduser("~"))
-    return config
+    # config can be either under user's home, home/.dotfiles, home/.dotfiles_WD
+    _home = os.path.expanduser("~")
+    _homeini = os.path.join(_home, 'wd40.ini')
+    _dotini = os.path.join(_home, '.dotfiles' 'wd40.ini')
+    _wddotini = os.path.join(_home,'.dotfiles_WD', 'wd40.ini')
+    # Priority home > .dotfiles > .dotfiles_WD
+    inilocs = [
+        _homeini,
+        _dotini,
+        _wddotini
+    ]
+    for ini in inilocs:
+        if os.path.exists(ini):
+            config.read(ini)
+            return config
+    return None
