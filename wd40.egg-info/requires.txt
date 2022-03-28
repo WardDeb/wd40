@@ -1,0 +1,9 @@
+configparser
+psutil
+Biopython
+matplotlib
+flake8
+rich
+pandas
+numpy
+pytest
